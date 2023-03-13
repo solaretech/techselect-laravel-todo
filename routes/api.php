@@ -30,4 +30,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             'destroy',
         ]
     ]);
+    Route::patch('todos/{todo}/done', [TodoItemController::class, 'done']);
+    Route::patch('todos/{todo}/undone', [TodoItemController::class, 'undone']);
 });
