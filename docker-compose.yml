@@ -1,48 +1,42 @@
-version: '3.9'
 services:
-  php:
-    image: php_todo_app
-    working_dir: /home/user/app
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    command: /bin/sh
-    tty: true
-    stdin_open: true
-    stop_signal: SIGKILL
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: laravel
-      DB_USERNAME: user
-      DB_PASSWORD: password123456
-    volumes:
-      - ./:/home/user/app
-    ports:
-      - '${PORT:-8000}:${PORT:-8000}'
-  db:
-    image: mysql:8.0
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password --collation-server=utf8mb4_general_ci
-    environment:
-      MYSQL_ROOT_PASSWORD: password123456
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password123456
-    volumes:
-      - mysqldata:/var/lib/mysql
-  myadmin:
-    image: phpmyadmin/phpmyadmin:5.1.1
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: password123456
-    depends_on:
-      - db
-    ports:
-      - ${MY_ADMIN_PORT:-8081}:80
+    app:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile
+        tty: true
+        environment:
+            DB_CONNECTION: pgsql
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_DATABASE: laravel
+            DB_USERNAME: root
+            DB_PASSWORD: passw@rd
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - "8000:80"
+    postgres:
+        image: postgres:14.7-alpine3.17
+        restart: always
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: passw@rd
+            POSTGRES_DB: laravel
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgresql:/var/lib/postgresql/data
+    phppgadmin:
+        image: bitnami/phppgadmin:latest
+        environment:
+            DATABASE_ENABLE_EXTRA_LOGIN_SECURITY: yes
+            PHPPGADMIN_ALLOW_REMOTE_CONNECTIONS: yes
+            PHP_PG_ADMIN_SERVER_SSL_MODE: disable
+            APACHE_HTTP_PORT_NUMBER: 8181
+            DATABASE_HOST: postgres
+        depends_on:
+            - postgres
+        ports:
+            - "8181:8181"
 volumes:
-  mysqldata:
+    postgresql:
