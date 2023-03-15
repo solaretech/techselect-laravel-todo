@@ -18,9 +18,11 @@ RUN apt -y update \
 RUN docker-php-ext-install pdo_pgsql zip
 
 # Install Composer
+RUN a2enmod rewrite
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN a2enmod rewrite
+COPY ./web ${ROOT}
 
 WORKDIR ${ROOT}
 
