@@ -28,11 +28,7 @@ WORKDIR /var/www/html
 
 RUN chmod 707 -R /var/www/html/storage
 
-# Debag
-RUN ls
-RUN pwd
-
-composer global require hirak/prestissimo
+RUN composer global require hirak/prestissimo
 RUN composer install --no-dev
 
 RUN echo "Caching config..."
