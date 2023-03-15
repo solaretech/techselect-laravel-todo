@@ -32,6 +32,7 @@ RUN chmod 707 -R /var/www/html/storage
 RUN ls
 RUN pwd
 
+composer global require hirak/prestissimo
 RUN composer install --no-dev
 
 RUN echo "Caching config..."
@@ -41,7 +42,6 @@ RUN echo "Caching routes..."
 RUN php artisan route:cache
 
 RUN echo "Running migrations..."
-RUN ps -eaf | grep postgres
 RUN php artisan migrate --force
 
 RUN npm install && \
