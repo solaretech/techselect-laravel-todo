@@ -24,8 +24,7 @@ RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-RUN composer global require hirak/prestissimo
-RUN composer install --no-dev --working-dir=/var/www/html
+RUN composer install --no-dev
 
 RUN echo "Caching config..."
 RUN php artisan config:cache
