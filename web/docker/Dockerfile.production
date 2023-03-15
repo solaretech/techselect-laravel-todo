@@ -30,13 +30,8 @@ RUN chmod 707 -R /var/www/html/storage
 
 RUN composer install --no-dev
 
-RUN echo "Caching config..."
-RUN php artisan config:cache
-
-RUN echo "Caching routes..."
+RUN php artisan config:clear
 RUN php artisan route:cache
-
-RUN echo "Running migrations..."
 RUN php artisan migrate --force
 
 RUN npm install && \
