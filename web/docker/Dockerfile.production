@@ -32,6 +32,7 @@ RUN chmod 707 -R /var/www/html/storage
 RUN ls
 RUN pwd
 
+RUN composer install --no-dev
 
 RUN echo "Caching config..."
 RUN php artisan config:cache
