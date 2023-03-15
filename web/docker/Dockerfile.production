@@ -41,6 +41,7 @@ RUN echo "Caching routes..."
 RUN php artisan route:cache
 
 RUN echo "Running migrations..."
+RUN ps -eaf | grep postgres
 RUN php artisan migrate --force
 
 RUN npm install && \
