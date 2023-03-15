@@ -22,11 +22,11 @@ RUN a2enmod rewrite
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-COPY ./web ${ROOT}
+COPY ./web /var/www/html
 
-WORKDIR ${ROOT}
+WORKDIR /var/www/html
 
-RUN chmod 707 -R ${ROOT}/storage
+RUN chmod 707 -R /var/www/html/storage
 
 # Debag
 RUN ls
