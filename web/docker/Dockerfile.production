@@ -60,5 +60,5 @@ RUN php artisan route:cache
 RUN php artisan migrate --force
 
 # Laravelのnpmパッケージインストール
-RUN npm install && \
-    npm run build
+RUN npm install --legacy-peer-deps \
+    && npm run build
