@@ -11,6 +11,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ARG APP_KEY
 ARG DB_CONNECTION
 ARG DATABASE_URL
+ARG APP_ENV
 
 # Dockerコンテナで公開に必要なファイルのコピー
 COPY ./web/docker/php.ini /usr/local/etc/php/
