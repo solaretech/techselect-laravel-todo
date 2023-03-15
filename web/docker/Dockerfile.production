@@ -1,0 +1,65 @@
+# 使用するイメージの指定
+FROM php:8.1.2-apache
+
+# 環境変数の設定
+ENV LANG C.UTF-8
+
+# Composerをrootでも実行可能にする
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# 外部環境変数を参照できるようにする
+ARG APP_KEY
+ARG DB_CONNECTION
+ARG DATABASE_URL
+
+# Dockerコンテナで公開に必要なファイルのコピー
+COPY ./web/docker/php.ini /usr/local/etc/php/
+COPY ./web/docker/*.conf /etc/apache2/sites-enabled/
+
+# node.jsのセットアップ
+RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash -
+
+# 必要なパッケージのインストール
+RUN apt -y update \
+    && apt -y upgrade \
+    && apt -y install \
+            nodejs \
+            libpq-dev \
+            unzip \
+            git \
+            libzip-dev \
+            zip
+
+# 必要なPHP拡張のインストール
+RUN docker-php-ext-install pdo_pgsql zip
+
+# Apacheの設定
+RUN a2enmod rewrite
+
+# Composerを取り込む
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# ソースコードをコンテナ内部にコピー
+COPY ./web /var/www/html
+
+# 作業ディレクトリの設定
+WORKDIR /var/www/html
+
+# パーミッションの設定
+RUN chmod 707 -R /var/www/html/storage
+
+# Composerでライブラリのインストール
+RUN composer install --no-dev
+
+# Laravelのキャッシュを作成
+RUN php artisan config:cache
+
+# Laravelのルーティングのキャッシュを作成
+RUN php artisan route:cache
+
+# Laravelのmigrationの実行(productionモードでも実施)
+RUN php artisan migrate --force
+
+# Laravelのnpmパッケージインストール
+RUN npm install --legacy-peer-deps \
+    && npm run build
