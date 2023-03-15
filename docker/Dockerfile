@@ -23,3 +23,4 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN a2enmod rewrite
 
 WORKDIR /var/www/html
+

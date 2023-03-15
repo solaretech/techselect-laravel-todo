@@ -22,16 +22,14 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN a2enmod rewrite
 
-RUN ls
-RUN pwd
+WORKDIR ${ROOT}
 
-WORKDIR /var/www/html
+RUN chmod 707 -R ${ROOT}/storage
 
 # Debag
 RUN ls
 RUN pwd
 
-RUN composer install --no-dev --working-dir=/var/www/html
 
 RUN echo "Caching config..."
 RUN php artisan config:cache
@@ -42,3 +40,5 @@ RUN php artisan route:cache
 RUN echo "Running migrations..."
 RUN php artisan migrate --force
 
+RUN npm install && \
+    npm run build
