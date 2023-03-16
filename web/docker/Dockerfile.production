@@ -12,6 +12,8 @@ ARG APP_KEY
 ARG DB_CONNECTION
 ARG DATABASE_URL
 ARG APP_ENV
+ARG SESSION_DOMAIN
+ARG SANCTUM_STATEFUL_DOMAINS
 
 # Dockerコンテナで公開に必要なファイルのコピー
 COPY ./web/docker/php.ini /usr/local/etc/php/
